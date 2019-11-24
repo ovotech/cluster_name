@@ -2,18 +2,25 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
+	"time"
 )
 
-var clusterName string
-var user string
-var pass string
-var errorString = "Unauthorized."
-var pattern = "/name"
-var port = "8090"
-var clusterNameUserVarName = "CLUSTER_NAME_U"
-var clusterNamePassVarName = "CLUSTER_NAME_P"
+var (
+	clusterName string
+	user        string
+	pass        string
+)
+
+const (
+	errorString            = "Unauthorized."
+	pattern                = "/name"
+	port                   = "8090"
+	clusterNameUserVarName = "CLUSTER_NAME_U"
+	clusterNamePassVarName = "CLUSTER_NAME_P"
+)
 
 func name(w http.ResponseWriter, req *http.Request) {
 	fmt.Fprintf(w, "%s\n", clusterName)
@@ -21,10 +28,12 @@ func name(w http.ResponseWriter, req *http.Request) {
 
 func main() {
 	if !envVarsValid() {
+		fmt.Println("vars invalid")
 		os.Exit(1)
 	}
-	//TODO: get the actual cluster name instead of this
-	clusterName = "burg"
+	user = os.Getenv(clusterNameUserVarName)
+	pass = os.Getenv(clusterNamePassVarName)
+	clusterName = getClusterName()
 	if clusterName == "" {
 		os.Exit(1)
 	}
@@ -32,7 +41,20 @@ func main() {
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
 
-// curl http://metadata/computeMetadata/v1/instance/attributes/cluster-name -H "Metadata-Flavor: Google"
+func getClusterName() string {
+	url := "http://metadata/computeMetadata/v1/instance/attributes/cluster-name"
+	client := &http.Client{Timeout: time.Second * 10}
+	req, _ := http.NewRequest("GET", url, nil)
+	req.Header.Set("Metadata-Flavor", "Google")
+	var resp *http.Response
+	var err error
+	if resp, err = client.Do(req); err != nil {
+
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+	return string(body)
+}
 
 func envVarsValid() (valid bool) {
 	return len(os.Getenv(clusterNameUserVarName)) > 0 &&
