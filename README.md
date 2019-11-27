@@ -32,7 +32,7 @@ background (add a `&` after the command), or open a new shell to test.
 Now send a request to it:
 
 ```bash
-$ curl -u blah:blah 'localhost:8090/cluster_name'
+$ curl -u foo:bar 'localhost:8090/cluster_name'
 
 my_test_cluster_name
 ```
