@@ -15,6 +15,7 @@
 package main
 
 import (
+	"crypto/subtle"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -134,5 +135,6 @@ func getEnv(key, fallback string) string {
 // check returns true if the provided user and pass strings are equal to
 // their configured counterparts
 func check(basicUser, basicPass string) bool {
-	return basicUser == user && basicPass == pass
+	return subtle.ConstantTimeCompare([]byte(basicUser), []byte(user)) == 1 &&
+		subtle.ConstantTimeCompare([]byte(basicPass), []byte(pass)) == 1
 }

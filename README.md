@@ -25,9 +25,8 @@ $ go build
 $ ./cluster_name
 ```
 
-
-If you choose the `go run` option, you'll either have to run it in the
-background (add a `&` after the command), or open a new shell to test.
+You'll either have to run it in the background (add a `&` after the command), 
+or open a new shell to test.
 
 Now send a request to it:
 
