@@ -1,0 +1,34 @@
+env:
+  - GO111MODULE=on
+before:
+  hooks:
+    - go mod download
+archives:
+  - id: binary
+    format: binary
+    builds:
+    - binary-build
+builds:
+  - id: binary-build
+    binary: cluster_name
+    goos:
+      - windows
+      - darwin
+      - linux
+    goarch:
+      - amd64
+    env:
+      - CGO_ENABLED=0
+checksum:
+  name_template: "{{ .ProjectName }}_checksums.txt"
+dockers:
+  -
+    goos: linux
+    goarch: amd64
+    binaries:
+    - cluster_name
+    image_templates:
+    - "ovotech/cluster_name:{{ .Tag }}"
+    - "ovotech/cluster_name:v{{ .Major }}"
+    - "ovotech/cluster_name:v{{ .Major }}.{{ .Minor }}"
+    - "ovotech/cluster_name:latest"
