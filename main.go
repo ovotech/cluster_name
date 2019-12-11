@@ -41,7 +41,7 @@ const (
 	envVarPrefix   = "CLUSTER_NAME"
 	userVarName    = "USER"
 	passVarName    = "PASS"
-	patternVarName = "PATT"
+	patternVarName = "PATH"
 	portVarName    = "PORT"
 	localVarName   = "LOCAL"
 	metaURL        = "http://metadata/computeMetadata/v1/instance/attributes/cluster-name"
