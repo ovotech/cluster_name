@@ -59,7 +59,9 @@ func main() {
 	}
 	pattern := getEnv(envVarName(patternVarName), defaultPattern)
 	http.HandleFunc(pattern, auth(name))
-	port := getEnv(envVarName(patternVarName), defaultPort)
+	http.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {})
+
+	port := getEnv(envVarName(portVarName), defaultPort)
 	http.ListenAndServe(fmt.Sprintf(":%s", port), nil)
 }
 
@@ -72,7 +74,7 @@ func name(w http.ResponseWriter, req *http.Request) {
 func auth(fn http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		basicUser, basicPass, _ := r.BasicAuth()
-		if !check(basicUser, basicPass) {
+		if !check(basicUser, basicPass, user, pass) {
 			logger.Warnf("Failed auth attempt from %s", r.RemoteAddr)
 			http.Error(w, errorString, http.StatusUnauthorized)
 			return
@@ -134,7 +136,7 @@ func getEnv(key, fallback string) string {
 
 // check returns true if the provided user and pass strings are equal to
 // their configured counterparts
-func check(basicUser, basicPass string) bool {
-	return subtle.ConstantTimeCompare([]byte(basicUser), []byte(user)) == 1 &&
-		subtle.ConstantTimeCompare([]byte(basicPass), []byte(pass)) == 1
+func check(suppliedUser, suppliedPass, user, pass string) bool {
+	return subtle.ConstantTimeCompare([]byte(suppliedUser), []byte(user)) == 1 &&
+		subtle.ConstantTimeCompare([]byte(suppliedPass), []byte(pass)) == 1
 }
