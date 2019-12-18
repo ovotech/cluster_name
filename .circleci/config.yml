@@ -21,6 +21,90 @@ jobs:
              echo $DOCKER_PASS | docker login -u=$DOCKER_USER --password-stdin
              curl -sL https://git.io/goreleaser | VERSION=v0.116.0 bash
 
+  go_fmt:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: ensure gofmt
+           command: |
+             test -z $(gofmt -s -l $(find . -iname '*.go' -type f | grep -v /vendor/))
+  go_vet:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: go vet
+           command: |
+             export GO111MODULE=on
+             go mod download
+             go vet ./...
+  go_cyclo:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: go_cyclo
+           command: gocyclo -over 6 cmd
+
+  go_lint:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: golint
+           command: golint -set_exit_status $(go list ./...)
+
+  go_build:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: go build
+           command: |
+             export GO111MODULE=on
+             go build
+  go_test:
+    <<: *defaults
+
+    docker:
+      - image: eversc/go-pr-checks
+
+    steps:
+      - checkout
+
+      - run:
+           name: go test
+           command: |
+             export GO111MODULE=on
+             go mod download
+             go test ./... -v
+
 workflows:
   version: 2
   release_pipeline:
