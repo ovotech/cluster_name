@@ -48,6 +48,7 @@ const (
 )
 
 func main() {
+	logger.Info("cluster_name starting up")
 	if !envVarsValid() {
 		logger.Fatal("Invalid env vars")
 	}
