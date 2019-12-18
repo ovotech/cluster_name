@@ -60,7 +60,7 @@ jobs:
 
       - run:
            name: go_cyclo
-           command: gocyclo -over 6 cmd
+           command: gocyclo -over 6 .
 
   go_lint:
     <<: *defaults
