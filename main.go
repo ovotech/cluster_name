@@ -36,7 +36,7 @@ var (
 const (
 	errorString    = "Unauthorized."
 	defaultPattern = "/cluster_name"
-	defaultPort    = "8090"
+	defaultPort    = "8091"
 	defaultLocal   = "false"
 	envVarPrefix   = "CLUSTER_NAME"
 	userVarName    = "USER"
