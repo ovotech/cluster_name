@@ -1,4 +1,5 @@
 # cluster_name
+[![CircleCI](https://circleci.com/gh/ovotech/cluster_name/tree/master.svg?style=svg)](https://circleci.com/gh/ovotech/cluster_name/tree/master)
 
 This is a Go program designed for use within GKE clusters, that returns the name of the cluster it's running in.
 
